@@ -1,0 +1,19 @@
+# .epinio-sync.yaml
+# app watch reads this file to decide how to sync local changes into the running pod.
+#
+# Run (app must already be pushed):
+#   epinio app watch example-go --path .
+#
+# Go is a compiled language, so this app uses binary mode.
+# On every save, watch runs build_cmd locally, then uploads the binary into the pod.
+# The supervisor replaces the running process with the new binary.
+#
+# Do not use files mode here: static HTML is embedded into the binary via go:embed,
+# so HTML changes only appear after a rebuild.
+
+# Shell command that builds a Linux-static binary. CGO is disabled so the
+# binary runs in the Paketo image without extra C libraries.
+build_cmd: "CGO_ENABLED=0 go build -o ./bin/example-go ."
+
+# Path to the built binary, relative to this source root. Watch uploads this file.
+binary: "./bin/example-go"
